@@ -1,0 +1,57 @@
+name: Lab Proposal
+description: Propose a new lab or exercise
+title: "[LAB] "
+labels: ["lab", "enhancement"]
+body:
+  - type: dropdown
+    id: module
+    attributes:
+      label: Target Module
+      options:
+        - 01 - Vulnerability Management
+        - 02 - Threat Hunting
+        - 03 - Pentesting
+        - 04 - SDLC Security
+        - 05 - Platform Security
+        - 06 - Security Engineering
+        - 07 - Agentic Security
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty Level
+      options:
+        - Associate
+        - Senior
+        - Senior+
+        - Principal
+    validations:
+      required: true
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: Learning Objective
+      description: What will someone learn by completing this lab?
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: What should someone know before attempting this?
+
+  - type: textarea
+    id: tools
+    attributes:
+      label: Tools/Technologies
+      description: What tools or technologies are involved?
+
+  - type: textarea
+    id: outline
+    attributes:
+      label: Lab Outline
+      description: High-level steps or structure

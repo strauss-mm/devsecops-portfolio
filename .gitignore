@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.eggs/
+
+# Environment
+.env
+.env.local
+*.local.yaml
+config.local.yaml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!example.tfvars
+
+# Test/Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Reports (generated)
+*.sarif
+sbom-output/
+
+# Secrets
+*.pem
+*.key
+credentials.json

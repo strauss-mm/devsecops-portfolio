@@ -1,0 +1,47 @@
+name: Container Scan
+
+on:
+  pull_request:
+    paths:
+      - "**/Dockerfile*"
+      - "**/docker/**"
+  push:
+    branches: [main]
+    paths:
+      - "**/Dockerfile*"
+      - "**/docker/**"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile:
+          - shared/docker/scanner-base/Dockerfile
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          dir=$(dirname ${{ matrix.dockerfile }})
+          docker build -t scan-target:${{ github.sha }} -f ${{ matrix.dockerfile }} $dir
+
+      - name: Run Trivy image scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: scan-target:${{ github.sha }}
+          format: sarif
+          output: trivy-container.sarif
+          severity: CRITICAL,HIGH
+
+      - name: Upload results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-container.sarif

@@ -1,0 +1,55 @@
+name: Detection Rule
+description: Submit a new Sigma, YARA, or KQL detection rule
+title: "[DETECTION] "
+labels: ["detection", "threat-hunting"]
+body:
+  - type: dropdown
+    id: rule-type
+    attributes:
+      label: Rule Type
+      options:
+        - Sigma
+        - YARA
+        - KQL
+    validations:
+      required: true
+
+  - type: input
+    id: mitre-attack
+    attributes:
+      label: MITRE ATT&CK Technique
+      placeholder: T1059.001
+
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: Confidence Level
+      options:
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this rule detect and why?
+    validations:
+      required: true
+
+  - type: textarea
+    id: rule-content
+    attributes:
+      label: Rule Content
+      description: The detection rule (will be validated in CI)
+      render: yaml
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: Test Cases
+      description: Known-good and known-bad test cases

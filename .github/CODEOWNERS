@@ -1,0 +1,7 @@
+# Default owner for everything
+* @strauss-mm
+
+# Security-sensitive paths require explicit review
+.github/workflows/ @strauss-mm
+shared/terraform-modules/ @strauss-mm
+06-security-engineering/modules/ @strauss-mm
