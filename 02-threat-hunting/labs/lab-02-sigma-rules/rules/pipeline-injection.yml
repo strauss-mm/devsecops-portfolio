@@ -1,0 +1,44 @@
+title: SaaS Pipeline Script Injection Attempt
+id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+status: test
+description: |
+    Detects attempts to inject malicious scripts or commands through
+    integration pipeline parameters. Attackers may abuse pipeline
+    inputs to execute arbitrary code on the integration platform.
+references:
+    - https://owasp.org/Top10/A03_2021-Injection/
+author: Marna Marie Strauss
+date: 2026/06/01
+modified: 2026/06/01
+tags:
+    - attack.execution
+    - attack.t1059
+    - attack.t1190
+logsource:
+    category: application
+    product: integration_platform
+    service: pipeline_execution
+detection:
+    selection_parameters:
+        EventType: "pipeline.execute"
+        ParameterValue|contains:
+            - "${Runtime.exec"
+            - "java.lang.Runtime"
+            - "ProcessBuilder"
+            - "javax.script.ScriptEngine"
+            - "groovy.lang.GroovyShell"
+            - "bsh.Interpreter"
+    selection_script_snap:
+        EventType: "snap.execute"
+        SnapType: "Script"
+        ScriptContent|contains:
+            - "import subprocess"
+            - "os.system("
+            - "exec(base64"
+            - "eval(compile"
+            - "__import__('os')"
+    condition: selection_parameters or selection_script_snap
+falsepositives:
+    - Legitimate Script Snap usage by authorized developers
+    - CI/CD pipelines that invoke system commands intentionally
+level: high

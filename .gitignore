@@ -45,3 +45,4 @@ sbom-output/
 *.pem
 *.key
 credentials.json
+.github/workflows/

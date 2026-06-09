@@ -1,0 +1,39 @@
+title: Suspicious API Key Usage from Unexpected Source
+id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+status: test
+description: |
+    Detects API key usage from IP addresses or user agents that differ
+    from the key's historical baseline. May indicate credential theft
+    or key exfiltration.
+references:
+    - https://attack.mitre.org/techniques/T1078/004/
+author: Marna Marie Strauss
+date: 2026/06/01
+tags:
+    - attack.initial_access
+    - attack.t1078.004
+    - attack.valid_accounts.cloud_accounts
+logsource:
+    category: application
+    product: integration_platform
+    service: api_access
+detection:
+    selection:
+        EventType: "api.authenticate"
+        AuthMethod: "api_key"
+    filter_known_sources:
+        SourceIP|cidr:
+            - "10.0.0.0/8"
+            - "172.16.0.0/12"
+            - "192.168.0.0/16"
+    filter_known_agents:
+        UserAgent|startswith:
+            - "SnapLogic/"
+            - "Apache-HttpClient/"
+            - "python-requests/"
+    condition: selection and not (filter_known_sources or filter_known_agents)
+falsepositives:
+    - New legitimate integration partners
+    - VPN or proxy changes for known users
+    - Mobile app access from variable IPs
+level: medium
