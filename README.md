@@ -1,6 +1,6 @@
 # DevSecOps Portfolio
 
-**Marna Marie Strauss** | Global Lead Security Engineer | Advancing to Principal DevSecOps Engineer
+**Marna Marie Strauss** | Global Lead Security Engineer | Advancing to Senior/Lead DevSecOps Engineer
 
 Production security engineering, vulnerability management, threat hunting, and AI-augmented security operations for enterprise SaaS platforms.
 
