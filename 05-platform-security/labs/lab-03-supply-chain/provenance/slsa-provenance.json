@@ -1,0 +1,51 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "subject": [
+    {
+      "name": "lab03-app",
+      "digest": {
+        "sha256": "PLACEHOLDER_AFTER_BUILD"
+      }
+    }
+  ],
+  "predicate": {
+    "builder": {
+      "id": "local-minikube-lab"
+    },
+    "buildType": "docker-build",
+    "invocation": {
+      "configSource": {
+        "uri": "git+https://github.com/strauss-mm/devsecops-portfolio",
+        "digest": {
+          "sha1": "PLACEHOLDER"
+        },
+        "entryPoint": "05-platform-security/labs/lab-03-supply-chain/app/Dockerfile"
+      }
+    },
+    "metadata": {
+      "buildInvocationId": "lab-local-build",
+      "buildStartedOn": "2026-06-10T00:00:00Z",
+      "completeness": {
+        "parameters": true,
+        "environment": false,
+        "materials": true
+      },
+      "reproducible": false
+    },
+    "materials": [
+      {
+        "uri": "docker://python:3.12-slim",
+        "digest": {
+          "sha256": "PLACEHOLDER"
+        }
+      },
+      {
+        "uri": "docker://gcr.io/distroless/python3-debian12:nonroot",
+        "digest": {
+          "sha256": "PLACEHOLDER"
+        }
+      }
+    ]
+  }
+}

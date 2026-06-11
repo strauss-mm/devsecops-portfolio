@@ -1,0 +1,49 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-probes
+  annotations:
+    policies.kyverno.io/title: Require Liveness and Readiness Probes
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Containers without probes can remain in broken states without
+      K8s noticing. This policy requires both liveness and readiness probes.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-liveness
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - app-team
+      validate:
+        message: "Containers must define a livenessProbe."
+        pattern:
+          spec:
+            containers:
+              - livenessProbe:
+                  httpGet:
+                    path: "?*"
+                    port: "?*"
+    - name: require-readiness
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - app-team
+      validate:
+        message: "Containers must define a readinessProbe."
+        pattern:
+          spec:
+            containers:
+              - readinessProbe:
+                  httpGet:
+                    path: "?*"
+                    port: "?*"

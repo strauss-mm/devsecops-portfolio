@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-privileged
+  namespace: app-team
+spec:
+  containers:
+    - name: hacker
+      image: alpine:3.19
+      # VIOLATION: privileged mode
+      securityContext:
+        privileged: true
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "100m"

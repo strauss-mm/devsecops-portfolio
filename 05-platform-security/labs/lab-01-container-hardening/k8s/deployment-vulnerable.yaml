@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vulnerable-app
+  namespace: lab-container-hardening
+  labels:
+    app: vulnerable-app
+    lab: "01"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vulnerable-app
+  template:
+    metadata:
+      labels:
+        app: vulnerable-app
+    spec:
+      containers:
+        - name: app
+          image: lab01-vulnerable:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          # NO security context - running as root with full capabilities
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vulnerable-app
+  namespace: lab-container-hardening
+spec:
+  selector:
+    app: vulnerable-app
+  ports:
+    - port: 80
+      targetPort: 8080

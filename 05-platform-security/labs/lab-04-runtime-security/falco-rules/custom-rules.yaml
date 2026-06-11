@@ -1,0 +1,87 @@
+- rule: Shell Spawned in Container
+  desc: Detect shell execution in a container that should not have interactive shells
+  condition: >
+    spawned_process and
+    container and
+    proc.name in (bash, sh, zsh, dash, ksh) and
+    not proc.pname in (cron, crond, supervisord)
+  output: >
+    Shell spawned in container
+    (user=%user.name container=%container.name shell=%proc.name
+    parent=%proc.pname cmdline=%proc.cmdline image=%container.image.repository)
+  priority: WARNING
+  tags: [container, shell, mitre_execution]
+
+- rule: Sensitive File Read in Container
+  desc: Detect reads of sensitive files like /etc/shadow, /etc/passwd, or env vars
+  condition: >
+    open_read and
+    container and
+    (fd.name startswith /etc/shadow or
+     fd.name startswith /etc/passwd or
+     fd.name startswith /proc/self/environ or
+     fd.name startswith /run/secrets)
+  output: >
+    Sensitive file read in container
+    (user=%user.name file=%fd.name container=%container.name
+    image=%container.image.repository command=%proc.cmdline)
+  priority: CRITICAL
+  tags: [container, filesystem, mitre_credential_access]
+
+- rule: Reverse Shell Detected
+  desc: Detect outbound connections that look like reverse shells
+  condition: >
+    evt.type = connect and
+    container and
+    fd.typechar = 4 and
+    fd.ip != "0.0.0.0" and
+    proc.name in (bash, sh, nc, ncat, netcat, python, python3, perl, ruby, php)
+  output: >
+    Reverse shell connection attempt
+    (user=%user.name command=%proc.cmdline connection=%fd.name
+    container=%container.name image=%container.image.repository)
+  priority: CRITICAL
+  tags: [container, network, mitre_command_and_control]
+
+- rule: Crypto Miner Activity
+  desc: Detect known cryptominer binaries or stratum protocol usage
+  condition: >
+    spawned_process and
+    container and
+    (proc.name in (xmrig, minerd, minergate, cpuminer, cgminer) or
+     proc.cmdline contains "stratum+tcp" or
+     proc.cmdline contains "stratum+ssl" or
+     proc.cmdline contains "pool.minexmr")
+  output: >
+    Crypto miner activity detected
+    (user=%user.name command=%proc.cmdline container=%container.name
+    image=%container.image.repository)
+  priority: CRITICAL
+  tags: [container, cryptominer, mitre_resource_hijacking]
+
+- rule: Container Escape Attempt
+  desc: Detect attempts to escape container via mount, nsenter, or chroot
+  condition: >
+    spawned_process and
+    container and
+    (proc.name in (nsenter, chroot) or
+     (proc.name = mount and proc.args contains "/host"))
+  output: >
+    Container escape attempt detected
+    (user=%user.name command=%proc.cmdline container=%container.name
+    image=%container.image.repository)
+  priority: CRITICAL
+  tags: [container, escape, mitre_privilege_escalation]
+
+- rule: Package Manager in Container
+  desc: Detect package manager usage which indicates runtime modification
+  condition: >
+    spawned_process and
+    container and
+    proc.name in (apt, apt-get, yum, dnf, apk, pip, pip3, npm, gem)
+  output: >
+    Package manager executed in running container
+    (user=%user.name command=%proc.cmdline container=%container.name
+    image=%container.image.repository)
+  priority: WARNING
+  tags: [container, supply_chain, mitre_persistence]

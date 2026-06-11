@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-labels
+  annotations:
+    policies.kyverno.io/title: Require Standard Labels
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: low
+    policies.kyverno.io/description: >-
+      All deployments must have standard labels for observability
+      and ownership tracking.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: require-team-label
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+              namespaces:
+                - app-team
+                - database
+      validate:
+        message: "Deployments must have 'app.kubernetes.io/name' and 'app.kubernetes.io/managed-by' labels."
+        pattern:
+          metadata:
+            labels:
+              app.kubernetes.io/name: "?*"
+              app.kubernetes.io/managed-by: "?*"
